@@ -70,11 +70,17 @@ module Multidb
       databases.each_pair do |name, config|
         configs = config.is_a?(Array) ? config : [config]
         configs.each do |config|
-          candidate = Candidate.new(name, @default_configuration.default_adapter.merge(config))
+          hash_config = resolve(config)
+          candidate = Candidate.new(name, @default_configuration.default_adapter.merge(hash_config))
           @candidates[name] ||= []
           @candidates[name].push(candidate)
         end
       end
+    end
+
+    def resolve(config)
+      resolver = ActiveRecord::ConnectionAdapters::ConnectionSpecification::Resolver.new(ActiveRecord::Base.configurations)
+      spec = resolver.resolve(config).symbolize_keys
     end
 
     def disconnect!
@@ -137,3 +143,4 @@ module Multidb
   end
 
 end
+
