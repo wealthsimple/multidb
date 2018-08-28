@@ -80,7 +80,7 @@ module Multidb
 
     def resolve(config)
       resolver = ActiveRecord::ConnectionAdapters::ConnectionSpecification::Resolver.new(ActiveRecord::Base.configurations)
-      spec = resolver.resolve(config).symbolize_keys
+      resolver.resolve(config).symbolize_keys
     end
 
     def disconnect!
